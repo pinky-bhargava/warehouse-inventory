@@ -1,5 +1,4 @@
 package model
-package model
 
 import "time"
 
@@ -16,7 +15,7 @@ type StockMain struct {
 }
 
 type StockDetail struct {
-	ID          uint    `gorm:"primaryKey"`
+	ID          uint `gorm:"primaryKey"`
 	StockMainID uint
 	ProductID   uint
 	Product     Product `gorm:"foreignKey:ProductID"`
