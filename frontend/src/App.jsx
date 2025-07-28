@@ -8,23 +8,20 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState("")
   const [quantity, setQuantity] = useState(0)
   const [type, setType] = useState("IN")
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   const fetchData = async () => {
-    try{
-    const [pRes, iRes] = await Promise.all([
-      axios.get(`${import.meta.env.VITE_API_URL}/products`),
-      axios.get(`${import.meta.env.VITE_API_URL}/inventory`)
-    ])
-    setProducts(pRes.data)
-    setInventory(iRes.data)
-    setLoading(false);
-  } catch (err) {
-    console.error("Error loading data", err)
-    setError('Failed to fetch data. Please check API and CORS.');
-    setLoading(false);
+    try {
+      const [pRes, iRes] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_API_URL}/products`),
+        axios.get(`${import.meta.env.VITE_API_URL}/inventory`)
+      ])
+      setProducts(pRes.data)
+      setInventory(iRes.data)
+    } catch (err) {
+      console.error("Error loading data", err)
+    }
   }
+
   useEffect(() => {
     fetchData()
   }, [])
@@ -51,10 +48,8 @@ export default function App() {
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Warehouse Inventory Tracker</h1>
-      
-      {loading && <p>Loading data...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-     
+
+      {/* Add Product Section */}
       <div className="mb-8 space-y-4">
         <h2 className="text-xl font-semibold">Add Product</h2>
         <div className="flex gap-2">
@@ -68,6 +63,7 @@ export default function App() {
         </div>
       </div>
 
+      {/* Record Transaction Section */}
       <div className="mb-8 space-y-4">
         <h2 className="text-xl font-semibold">Record Transaction</h2>
         <div className="flex flex-wrap gap-2 items-center">
@@ -90,6 +86,7 @@ export default function App() {
         </div>
       </div>
 
+      {/* Inventory Table */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Current Inventory</h2>
         <table className="min-w-full bg-white border">
@@ -100,7 +97,7 @@ export default function App() {
             </tr>
           </thead>
           <tbody>
-           {inventory && inventory.length > 0 ? (
+            {inventory && inventory.length > 0 ? (
               inventory.map((inv) => (
                 <tr key={inv.productId}>
                   <td className="py-2 px-4 border-b">{inv.name}</td>
@@ -108,17 +105,15 @@ export default function App() {
                 </tr>
               ))
             ) : (
-              !loading && (
-                <tr>
-                  <td colSpan="2" className="py-2 px-4 text-center text-gray-500">
-                    No inventory available.
-                  </td>
-                </tr>
-              )
+              <tr>
+                <td colSpan="2" className="py-2 px-4 text-center text-gray-500">
+                  No inventory available.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
       </div>
     </div>
   )
-}}
+}
