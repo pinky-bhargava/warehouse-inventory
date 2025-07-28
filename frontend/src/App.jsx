@@ -8,6 +8,8 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState("")
   const [quantity, setQuantity] = useState(0)
   const [type, setType] = useState("IN")
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const fetchData = async () => {
     try{
@@ -17,8 +19,11 @@ export default function App() {
     ])
     setProducts(pRes.data)
     setInventory(iRes.data)
+    setLoading(false);
   } catch (err) {
     console.error("Error loading data", err)
+    setError('Failed to fetch data. Please check API and CORS.');
+    setLoading(false);
   }
   useEffect(() => {
     fetchData()
@@ -46,7 +51,10 @@ export default function App() {
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Warehouse Inventory Tracker</h1>
-
+      
+      {loading && <p>Loading data...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+     
       <div className="mb-8 space-y-4">
         <h2 className="text-xl font-semibold">Add Product</h2>
         <div className="flex gap-2">
@@ -92,19 +100,25 @@ export default function App() {
             </tr>
           </thead>
           <tbody>
-            {inventory && inventory.length > 0 ? (
+           {inventory && inventory.length > 0 ? (
               inventory.map((inv) => (
-              <tr key={inv.productID}>
-                <td className="py-2 px-4 border-b">{inv.name}</td>
-                <td className="py-2 px-4 border-b">{inv.quantity}</td>
-              </tr>
-            ))
-          ) : (
-            !loading && <p>No inventory available.</p>
-          )}
+                <tr key={inv.productId}>
+                  <td className="py-2 px-4 border-b">{inv.name}</td>
+                  <td className="py-2 px-4 border-b">{inv.quantity}</td>
+                </tr>
+              ))
+            ) : (
+              !loading && (
+                <tr>
+                  <td colSpan="2" className="py-2 px-4 text-center text-gray-500">
+                    No inventory available.
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>
     </div>
   )
-}
+}}
