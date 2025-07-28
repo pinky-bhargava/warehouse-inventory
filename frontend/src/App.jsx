@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
-const API = 'http://localhost:8080/api'
+const API = '/api'
 
 export default function App() {
   const [products, setProducts] = useState([])
