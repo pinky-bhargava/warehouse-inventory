@@ -10,14 +10,16 @@ export default function App() {
   const [type, setType] = useState("IN")
 
   const fetchData = async () => {
+    try{
     const [pRes, iRes] = await Promise.all([
       axios.get(`${import.meta.env.VITE_API_URL}/products`),
       axios.get(`${import.meta.env.VITE_API_URL}/inventory`)
     ])
     setProducts(pRes.data)
     setInventory(iRes.data)
+  } catch (err) {
+    console.error("Error loading data", err)
   }
-
   useEffect(() => {
     fetchData()
   }, [])
@@ -90,12 +92,16 @@ export default function App() {
             </tr>
           </thead>
           <tbody>
-            {inventory.map((inv) => (
+            {inventory && inventory.length > 0 ? (
+              inventory.map((inv) => (
               <tr key={inv.productID}>
                 <td className="py-2 px-4 border-b">{inv.name}</td>
                 <td className="py-2 px-4 border-b">{inv.quantity}</td>
               </tr>
-            ))}
+            ))
+          ) : (
+            !loading && <p>No inventory available.</p>
+          )}
           </tbody>
         </table>
       </div>
