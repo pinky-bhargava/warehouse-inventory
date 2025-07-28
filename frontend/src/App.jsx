@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
-const API = '/api'
-
 export default function App() {
   const [products, setProducts] = useState([])
   const [inventory, setInventory] = useState([])
@@ -13,8 +11,8 @@ export default function App() {
 
   const fetchData = async () => {
     const [pRes, iRes] = await Promise.all([
-      axios.get(`${API}/products`),
-      axios.get(`${API}/inventory`)
+      axios.get(`${import.meta.env.VITE_API_URL}/products`),
+      axios.get(`${import.meta.env.VITE_API_URL}/inventory`)
     ])
     setProducts(pRes.data)
     setInventory(iRes.data)
@@ -26,14 +24,14 @@ export default function App() {
 
   const addProduct = async () => {
     if (!name) return
-    await axios.post(`${API}/products`, { name })
+    await axios.post(`${import.meta.env.VITE_API_URL}/products`, { name })
     setName("")
     fetchData()
   }
 
   const recordTransaction = async () => {
     if (!selectedProduct || !quantity) return
-    await axios.post(`${API}/transaction`, {
+    await axios.post(`${import.meta.env.VITE_API_URL}/transaction`, {
       transactionType: type,
       transactionDate: new Date().toISOString(),
       items: [{ productId: parseInt(selectedProduct), quantity: parseInt(quantity) }]
