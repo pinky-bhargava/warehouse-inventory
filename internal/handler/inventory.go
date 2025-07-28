@@ -8,9 +8,9 @@ import (
 )
 
 type Inventory struct {
-	ProductID uint
-	Name      string
-	Quantity  int
+	ProductID uint   `json:"productId"`
+	Name      string `json:"name"`
+	Quantity  int    `json:"quantity"`
 }
 
 func GetInventory(c *gin.Context) {
